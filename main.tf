@@ -3,22 +3,40 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = "scalesetVM"
-  location = "UK South"
+
+
+module "asis" {
+  source = "./azure-scale-set"
+  environment = "production"
+  location = "eastasia"
+  time_zone = "GMT Standard Time"
+  out_hour = 22
+  out_minute = 30
+  in_hour = 2
+  in_minute = 30
 }
 
-module "load-balancer" {
-  source              = "./load-balancer"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  prefix              = "terraform-test"
 
-module "azure-virtual-machine" {
-  source = "./virtual-machine"
-  resource_group = azurerm_resource_group.example.name
-  location = azurerm_resource_group.example.location 
-  user = "gumic"
-  size = "Standard_B1s"
+module "uk" {
+  source = "./azure-scale-set"
+  environment = "development"
+  location = "uksouth"
+  time_zone = "GMT Standard Time"
+  out_hour = 17
+  out_minute = 30
+  in_hour = 9
+  in_minute = 0
+}
+
+
+module "france" {
+  source = "./azure-scale-set"
+  environment = "staging"
+  location = "francecentral"
+  time_zone = "GMT Standard Time"
+  out_hour = 22
+  out_minute = 30
+  in_hour = 2
+  in_minute = 30
 }
 
